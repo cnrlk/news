@@ -21,23 +21,26 @@ import java.lang.reflect.Type
 
 private val Context.datastore: DataStore<Preferences> by preferencesDataStore(Constants.API_CALL_RESPONSE)
 
-class DataStoreManagerImpl(private val context: Context) : DataStoreManager {
+class DataStoreManagerImpl(
+    private val context: Context,
+    private val gson: Gson
+) : DataStoreManager {
 
     override suspend fun saveNewsBriefs(response: NewsList<NewsBrief>) {
         context.datastore.edit {
-            it[NEWS_BRIEFS_TOKEN] = Gson().toJson(response).toString()
+            it[NEWS_BRIEFS_TOKEN] = gson.toJson(response).toString()
         }
     }
 
     override suspend fun saveNewsDetails(response: NewsList<NewsDetail>) {
         context.datastore.edit {
-            it[NEWS_DETAILS_TOKEN] = Gson().toJson(response).toString()
+            it[NEWS_DETAILS_TOKEN] = gson.toJson(response).toString()
         }
     }
 
     override suspend fun saveDateOrderPreference(preference: DatePreference) {
         context.datastore.edit {
-            it[DATE_ORDER_PREFERENCE] = Gson().toJson(preference).toString()
+            it[DATE_ORDER_PREFERENCE] = gson.toJson(preference).toString()
         }
     }
 
@@ -45,8 +48,8 @@ class DataStoreManagerImpl(private val context: Context) : DataStoreManager {
         return context.datastore.data.map {
             val returnType: Type = object : TypeToken<DatePreference>() {}.type
             val returnValueAsString: String =
-                it[NEWS_BRIEFS_TOKEN] ?: Gson().toJson(DatePreference.DESCENDING).toString()
-            Gson().fromJson(returnValueAsString, returnType)
+                it[DATE_ORDER_PREFERENCE] ?: gson.toJson(DatePreference.DESCENDING).toString()
+            gson.fromJson(returnValueAsString, returnType)
         }
     }
 
@@ -54,7 +57,7 @@ class DataStoreManagerImpl(private val context: Context) : DataStoreManager {
         return context.datastore.data.map {
             val returnType: Type = object : TypeToken<NewsList<NewsBrief>>() {}.type
             val returnValueAsString: String = it[NEWS_BRIEFS_TOKEN] ?: ""
-            Gson().fromJson(returnValueAsString, returnType)
+            gson.fromJson(returnValueAsString, returnType)
         }
     }
 
@@ -62,7 +65,7 @@ class DataStoreManagerImpl(private val context: Context) : DataStoreManager {
         return context.datastore.data.map {
             val returnType: Type = object : TypeToken<NewsList<NewsDetail>>() {}.type
             val returnValueAsString: String = it[NEWS_DETAILS_TOKEN] ?: ""
-            Gson().fromJson(returnValueAsString, returnType)
+            gson.fromJson(returnValueAsString, returnType)
         }
     }
 

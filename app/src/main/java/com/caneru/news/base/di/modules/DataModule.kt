@@ -6,6 +6,7 @@ import com.caneru.news.base.datastore.DataStoreManagerImpl
 import com.caneru.news.base.di.apis.NewsAPI
 import com.caneru.news.base.di.repositories.NewsRepository
 import com.caneru.news.base.di.repositories.NewsRepositoryImpl
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,13 +25,19 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideDataStoreManager(@ApplicationContext context: Context): DataStoreManager {
-        return DataStoreManagerImpl(context)
+    fun provideDataStoreManager(@ApplicationContext context: Context, gson: Gson): DataStoreManager {
+        return DataStoreManagerImpl(context, gson)
     }
 
     @Provides
     @Singleton
     fun provideNewsRepository(newsAPI: NewsAPI, dataStoreManager: DataStoreManager): NewsRepository {
         return NewsRepositoryImpl(newsAPI = newsAPI, dataStoreManager = dataStoreManager)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGSON(): Gson {
+        return Gson()
     }
 }
