@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">News</string>
+    <string name="web_view">Web View</string>
+    <string name="reader_view">Reader View</string>
+</resources>
